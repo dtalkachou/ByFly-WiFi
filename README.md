@@ -13,5 +13,5 @@ $ pip install -r requirements.txt
 
 On Unix systems, you can bind alias to this script with the following command:
 ```
-$ alias ciscowifi="$(pwd)/ciscowifi.py"
+$ echo "alias ciscowifi=\"$(pwd)/ciscowifi.py\"" >> ~/.bashrc
 ```
