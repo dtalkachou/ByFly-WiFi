@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+import os
+
 from requests import Session
 from collections.abc import Iterable
 from configparser import ConfigParser
@@ -15,9 +17,10 @@ from consts import (
 
 from colorama import Style, Fore
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 COOKIES = {'safe': '1'}
 DATA = {CSRF_TOKEN_NAME: None}
-
 
 def clr_print(style, *args, **kwargs):
     slices = [(None, 1), (1, -1)]
@@ -35,7 +38,7 @@ def clr_print(style, *args, **kwargs):
 
 def main():
     config = ConfigParser()
-    config.read('conf.ini')
+    config.read(os.path.join(BASE_DIR, 'conf.ini'))
 
     try:
         for key in config['AUTH']:
