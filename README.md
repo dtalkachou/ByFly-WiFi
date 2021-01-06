@@ -4,14 +4,25 @@
 
 Change `conf.ini` file to your credentials.
 
-**Note!** You need some packages. You can install them with the following command:
+**Note!** You need python and some packages. You can install packages with the following command:
 ```
 $ pip install -r requirements.txt
 ```
 
 ## Help
 
-On Unix systems, you can bind alias to this script with the following command:
+You can bind alias to this script with the following commands:
+
+### On Windows
+```
+> reg add "HKCU\Software\Microsoft\Command Processor" /v Autorun /d "doskey ciscowifi=python \"%cd%\ciscowifi.py\"" /f
+```
+
+### On Unix systems
 ```
 $ echo "alias ciscowifi=\"$(pwd)/ciscowifi.py\"" >> ~/.bashrc
 ```
+
+**Note!** You should be in the `ByFly-WiFi` directory.
+
+You can now use `ciscowifi` command in you terminal for quick connection to wireless.
