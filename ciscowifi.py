@@ -6,6 +6,7 @@ from collections.abc import Iterable
 from configparser import ConfigParser
 
 from bs4 import BeautifulSoup
+from colorama import init, Style, Fore
 
 from consts import (
     BASE_URL,
@@ -15,7 +16,6 @@ from consts import (
     INVALID_CONFIG_MESSAGE,
 )
 
-from colorama import Style, Fore
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -37,6 +37,8 @@ def clr_print(style, *args, **kwargs):
 
 
 def main():
+    init()
+
     config = ConfigParser()
     config.read(os.path.join(BASE_DIR, 'conf.ini'))
 
