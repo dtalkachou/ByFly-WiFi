@@ -5,9 +5,12 @@ CONNECT_URL = BASE_URL + 'connect_by_card/'
 DISCONNECT_URL = BASE_URL + 'disconnect/'
 
 # Messages
-INVALID_CONFIG_MESSAGE = 'Invalid config file.'
-CONNECTED_MESSAGE = 'Connected.'
-DISCONNECTED_MESSAGE = 'Disconnected.'
+INVALID_CONFIG_MESSAGE = 'Invalid config file'
+DISCONNECTED_MESSAGE = 'Disconnected'
+UNKNOWN_BEHAVIOR_MESSAGE = 'Unknown behavior' 
+
+# Cookies
+MESSAGES_COOKIE_NAME = 'messages'
 
 # ArgumentParser
 ARGUMENT_PARSER_DESCRIPRION = 'Quck interaction with ciscowifi.beltelecom.by'

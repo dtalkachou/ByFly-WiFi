@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 import os
+import re
+
 import requests
 
 from argparse import ArgumentParser
@@ -31,34 +33,42 @@ def __clr_print(style, *args, **kwargs):
     print(*new_args, **kwargs)
 
 
-def connect():
+def config_to_data(section):
     config = ConfigParser()
     config.read(os.path.join(BASE_DIR, 'conf.ini'))
 
     try:
-        for key in config['AUTH']:
-            DATA[key.lower()] = config['AUTH'][key]
+        for key in config[section]:
+            DATA[key.lower()] = config[section][key]
     except KeyError:
         __clr_print(Fore.RED, INVALID_CONFIG_MESSAGE)
         exit(1)
 
-    with requests.Session() as s:
-        resp = s.get(BASE_URL, cookies=COOKIES)
-        if resp.status_code == 200:
-            soup = BeautifulSoup(resp.content, 'html.parser')
-            csrf_token = soup.select(
-                f'input[name={CSRF_TOKEN_NAME}]'
-            )[0]['value']
-            DATA[CSRF_TOKEN_NAME] = csrf_token
-            resp = s.post(CONNECT_URL, cookies=COOKIES, data=DATA)
-            __clr_print(Fore.GREEN, CONNECTED_MESSAGE)
-            # todo: handler alert messages
-        else:
-            __clr_print(Fore.RED, resp.reason)
+
+def connect(s):
+    config_to_data('AUTH')
+    resp = s.post(CONNECT_URL, cookies=COOKIES, data=DATA)
+    soup = BeautifulSoup(resp.content, 'html.parser')
+    first_child = soup.find('div', class_='form').find()
+
+    if first_child.name == 'h3':
+        __clr_print(Fore.GREEN, first_child.find(text=True))
+    else:
+        cookies_dict = s.cookies.get_dict()
+        if MESSAGES_COOKIE_NAME not in cookies_dict:
+            __clr_print(Fore.YELLOW, UNKNOWN_BEHAVIOR_MESSAGE)
+            return
+        messages = re.sub(
+            r'\\{2}',
+            r'\\',
+            cookies_dict[MESSAGES_COOKIE_NAME]
+        ).encode().decode('unicode_escape')
+        msg_text = re.findall(r'\[.*,(.*?)\]', messages)[0]
+        __clr_print(Fore.RED, msg_text)
 
 
-def disconnect():
-    resp = requests.post(DISCONNECT_URL)
+def disconnect(s):
+    resp = s.post(DISCONNECT_URL, data=DATA)
     __clr_print(Fore.YELLOW, DISCONNECTED_MESSAGE)
 
 
@@ -73,10 +83,20 @@ def main():
     args = parser.parse_args()
 
     try:
-        if args.action in ARGUMENT_PARSER_ACTION_CONNECT_CHOICES:
-            connect()
-        else:
-            disconnect()
+        with requests.Session() as s:
+            s.cookies.update(COOKIES)
+
+            resp = s.get(BASE_URL)
+            if resp.status_code == 200:
+                csrf_token = BeautifulSoup(resp.content, 'html.parser') \
+                    .select(f'input[name={CSRF_TOKEN_NAME}]')[0]['value']
+                DATA[CSRF_TOKEN_NAME] = csrf_token
+                if args.action in ARGUMENT_PARSER_ACTION_CONNECT_CHOICES:
+                    connect(s)
+                else:
+                    disconnect(s)
+            else:
+                __clr_print(Fore.RED, resp.reason)
     except requests.exceptions.ConnectionError as err:
         __clr_print(Fore.RED, err)
     
