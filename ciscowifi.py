@@ -77,9 +77,9 @@ def main():
     init()
 
     parser = ArgumentParser(description=ARGUMENT_PARSER_DESCRIPRION)
-    parser.add_argument('action', choices=ARGUMENT_PARSER_ACTION_CHOICES,
-                        default=ARGUMENT_PARSER_ACTION_CHOICES[0],
-                        help=ARGUMENT_PARSER_ACTION_HELP)
+    parser.add_argument('-a', '--action', help=ARGUMENT_PARSER_ACTION_HELP,
+                        choices=ARGUMENT_PARSER_ACTION_CHOICES, nargs='?',
+                        default=ARGUMENT_PARSER_ACTION_CHOICES[0])
     args = parser.parse_args()
 
     try:
