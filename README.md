@@ -1,5 +1,7 @@
 # ByFly Wi-Fi
 
+![screenshot]
+
 ## Installation
 
 Change `conf.ini` file to your credentials.
@@ -26,3 +28,6 @@ $ echo "alias ciscowifi=\"$(pwd)/ciscowifi.py\"" >> ~/.bashrc
 **Note!** You should be in the `ByFly-WiFi` directory.
 
 You can now use `ciscowifi` command in you terminal for quick connection to wireless.
+
+<!-- Attachments -->
+[screenshot]: https://i.ibb.co/fHcHhF5/1.png
